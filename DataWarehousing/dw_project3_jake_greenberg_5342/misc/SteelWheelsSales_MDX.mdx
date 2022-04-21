@@ -1,0 +1,26 @@
+/*SELECT [DIM TIME].[Month Name].MEMBERS on ROWS,[Measures].[QuantityOrdered] on COLUMNS
+FROM [SteelWheelsSales] 
+WHERE [CUSTOMERS].[Country].&[USA];*/
+
+/*SELECT CrossJoin({[ORDERFACT].[STATUS].&[Disputed], 
+[ORDERFACT].[STATUS].&[Resolved]}, {[Measures].[TOTALPRICE], 
+[Measures].[QuantityOrdered]}) ON COLUMNS, 
+{[Products].[ProductLine].&[Classic Cars], [Products].[ProductLine].&[Planes]} ON ROWS 
+FROM [SteelWheelsSales] 
+WHERE ([Dim Time].[YEAR ID].[2005])*/
+
+/*SELECT non empty CrossJoin({[ORDERFACT].[STATUS].&[Disputed], 
+[ORDERFACT].[STATUS].&[Resolved]}, {[Measures].[TOTALPRICE], 
+[Measures].[QuantityOrdered]}) ON COLUMNS, 
+non empty ({[Products].[ProductLine].&[Classic Cars], [Products].[ProductLine].&[Planes]},[DIM TIME].[YEAR ID].[YEAR ID])  ON ROWS 
+FROM [SteelWheelsSales]*/
+
+/*SELECT non empty CrossJoin({[ORDERFACT].[STATUS].&[Disputed], 
+[ORDERFACT].[STATUS].&[Resolved]}, {[Measures].[TOTALPRICE], 
+[Measures].[QuantityOrdered]}, [DIM TIME].[YEAR ID].[YEAR ID]) ON COLUMNS, 
+non empty {[Products].[ProductLine].&[Classic Cars], [Products].[ProductLine].&[Planes]}  ON ROWS 
+FROM [SteelWheelsSales]*/
+
+/*SELECT NON EMPTY ({[DIM TIME].[YEAR ID], [DIM TIME].[YEAR ID].[YEAR ID]}, [Measures].[TOTALPRICE]) ON COLUMNS, 
+NON EMPTY  {[DIM TIME].[MONTH NAME],[DIM TIME].[MONTH NAME].[MONTH NAME]} ON ROWS 
+FROM [SteelWheelsSales]*/
