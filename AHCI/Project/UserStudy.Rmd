@@ -1,0 +1,96 @@
+---
+title: "AHCI User Study"
+output:
+  html_notebook: default
+  pdf_document: default
+---
+
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(ggpubr)
+library(jtools)
+library(kableExtra)
+```
+
+```{r}
+#Import Datasets
+preResults <- read_csv('data/preResponse.csv')
+postResults <- read_csv('data/postResponse.csv')
+expResults <- read_csv('data/results.csv')
+```
+```{r}
+#Check import
+head(preResults)
+head(postResults)
+head(expResults)
+```
+```{r}
+#Separate out variables into a combined DF
+combinedDF <- inner_join(preResults, postResults, by = "UID")
+combinedDF <- inner_join(combinedDF, expResults, by = "UID")
+#Filter to only certain variables
+sparseDF <- combinedDF[c('UID', 'gender', 'age', 'hec_rating', 'comp_exp', 'vr_exp', 'vr_usage', 'pre_catch_percent', 'vr_time', 'post_catch_percent', 'app_feel')]
+```
+
+```{r}
+#Convert some 'chr' variables to factors
+sparseDF$gender.f <- factor(sparseDF$gender)
+sparseDF$age.f <- factor(sparseDF$age)
+#Generate a Linear Model
+lm <- lm(post_catch_percent ~ pre_catch_percent + vr_time + vr_exp + age.f + gender.f, data = sparseDF)
+```
+
+```{r}
+summary(lm)
+```
+```{r}
+#Drop Age and Gender due to heavy skewing and lack of data
+lm <- lm(post_catch_percent ~ pre_catch_percent + vr_time + vr_exp + app_feel, data = sparseDF)
+```
+
+```{r}
+#Default Summary
+#summary(lm)
+#Jtools Summary
+summ(lm)
+
+#KableExtra Table
+lm %>%
+  tidy() %>%
+  kable(
+    caption = "Coefficient-Level Estimates for Post Catch Percentage"
+  ) %>%
+  kable_styling(full_width = FALSE)
+```
+
+```{r}
+plot(lm$residuals, pch = 16, col = "red")
+```
+```{r}
+mean(sparseDF$app_feel)
+```
+```{r}
+#plot(lm)
+#abline(fit)
+
+ggplot(lm, aes(x = post_catch_percent, y = pre_catch_percent)) +
+  ggtitle("Post Catch Percent Predicted by Pre Catch Percent") +
+  xlab("Post Experiment Catch Percentage") +
+  ylab("Pre Experiment Catch Percentage") +
+  geom_point() +
+  stat_smooth(method = "lm") +
+  stat_regline_equation(label.x.npc = "center")
+```
+```{r}
+ggplot(lm, aes(x = post_catch_percent, y = vr_time)) +
+  ggtitle("Post Catch Percent Predicted by VR Time") +
+  xlab("Post Experiment Catch Percentage") +
+  ylab("VR Time") +
+  geom_point() +
+  stat_smooth(method = "lm") +
+  stat_regline_equation(label.x.npc = "center")
+```
+
+
