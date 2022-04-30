@@ -1,2 +1,4 @@
 LargeFiles/*
 DataWrangling/Project/data/*.csv
+DataWrangling/.ipynb_checkpoints/*
+DataWrangling/Project/.ipynb_checkpoints/*
